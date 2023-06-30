@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Email_On_Approval</name>
+                <type>Alert</type>
+            </action>
+            <action>
+                <name>Update_Order_Status_as_Open</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>20005923@uniphos.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Step 1</label>
+        <name>Step_1</name>
+        <rejectionActions>
+            <action>
+                <name>Email_on_Rejection</name>
+                <type>Alert</type>
+            </action>
+            <action>
+                <name>Update_Order_Status_as_Rejected</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>Old version</description>
+    <emailTemplate>Argentina/Argentina_Sales_Order_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <criteriaItems>
+            <field>Sales_Order__c.SalesOrgCode__c</field>
+            <operation>equals</operation>
+            <value>5631</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sales_Order__c.Order_Status__c</field>
+            <operation>equals</operation>
+            <value>Pending</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>Argentina Sales Order Approval Process</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>1</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

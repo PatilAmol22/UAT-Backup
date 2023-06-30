@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CreatedBy</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>1 = 0</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>Auto Approve</label>
+        <name>Auto_Approve</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>sadmin@upl.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Dummy Step</label>
+        <name>Dummy_Step</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Created by pallavi on 08.09.2020 for Price ,Payment Term Discount,Transport contribution,Free Product Approval.Only Price :1 AM to AM
+
+AM to AM
+-Order creator: Area Manager
+-Approvers present or not:AM Present
+-AM Price Approval(L1):yes
+-SD Price Approval(L2):No
+-CH Price Approval(L3):No
+-TC Approval:No
+-PT Approval:No
+-FP Approval:No
+-Assigned Approver:Area Manager- Auto Approve</description>
+    <emailTemplate>Italy/Italy_SO_Approval_Request_TO_AM_SD_CH</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(SalesOrgCode__c = &apos;2410&apos;,
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c = FALSE,
+Sent_for_Latam_Director_Approval__c = FALSE,
+Check_Transport_contribution__c=False,
+Is_Payment_Term_Discount_Approval_Italy__c=False,
+is_Different_Free_Product__c=FALSE,
+NOT(ISPICKVAL(Order_Type_Italy__c,&apos;Return Order&apos;))
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approved_By_SDM_as_TRUE</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Order_Sub_Status_to_AutoApproved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_AM</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_SA</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Already_Submitted</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Italy Auto SO Approval:Price,TC,FP &amp; PT</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>15</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

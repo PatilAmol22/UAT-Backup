@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Brazil_Sales_Price_Admin</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Brazil_System_Administrator</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Approval_Reason__c</field>
+        <field>Cancellation_Reason__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>SalesDistrictManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>SalesDistrictManager__c  &lt;&gt;  $User.Id</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>Aprovação do SDM de bloqueio de pedidos</label>
+        <name>SDM_Approval</name>
+    </approvalStep>
+    <description>call when user want to edit/cancel sales order line items</description>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>NOT( ISBLANK( SalesDistrictManager__c ) )</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>SDM_Approval1</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>SDM_Reject1</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>SDM_Status</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>SDM_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>SDM_Reject</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>SDM_Status1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Approval_Reason11</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Brazil Order Item - Edit/Cancel Process</label>
+    <processOrder>12</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

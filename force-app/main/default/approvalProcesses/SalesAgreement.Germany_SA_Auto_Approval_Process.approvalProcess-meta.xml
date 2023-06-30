@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Sales_Forecast_Details__c</field>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Account</field>
+        <field>Pricebook</field>
+        <field>Status</field>
+        <field>StartDate</field>
+        <field>EndDate</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CreatedBy</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>1=0</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>Auto Approve</label>
+        <name>Auto_Approve</name>
+    </approvalStep>
+    <description>This Approval Process used for SA Auto Approval record.
+Created By Satish Tiware(14/06/2023)</description>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+   OR(Sale_Org_Code__c =&apos;2191&apos;,
+      Sale_Org_Code__c =&apos;2192&apos;),
+   ISPICKVAL(Status, &apos;Draft&apos;),
+    NOT(ISBLANK(AccountId))
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Update_Status_as_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>true</finalApprovalRecordLock>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>Germany SA Auto Approval Process</label>
+    <processOrder>2</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

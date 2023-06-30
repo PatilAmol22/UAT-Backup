@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Order_Type_lk__c</field>
+        <field>Order_Status__c</field>
+        <field>DistributionChannelCode__c</field>
+        <field>Division_lk__c</field>
+        <field>NetAmount_Argentina__c</field>
+        <field>Net_Amount__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SDM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver : Area manager(If Present)
+If Order is created by Sales Agent &amp; Area Manager is present.
+Transport Contribution Approval is not required.
+then only manager approval is required.</description>
+        <entryCriteria>
+            <formula>AND( Sent_for_Manager_Approval_Mexico__c=TRUE, 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Manager__c)),
+Check_Transport_contribution__c=False
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Area Manager</label>
+        <name>Step_1_1</name>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SDM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SDM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver:Area manager(Price)
+If Order is created by Sales Agent &amp; Area Manager is present(To Area manager)
+Transport Contribution Approval is required 
+then manager approval is required for price &amp; sales director approval is required for Transport contribution</description>
+        <entryCriteria>
+            <formula>AND(Sent_for_Manager_Approval_Mexico__c=TRUE, 
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c = FALSE,
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Manager__c)),
+Check_Transport_contribution__c=TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Area Manager</label>
+        <name>Step_1_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SDM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver: Sales director(TC)
+If Order is created by Sales Agent &amp; Area Manager is present(To Area manager) 
+Transport Contribution Approval is required 
+then manager approval is required for price &amp; sales director approval is required for Transport contribution</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+Check_Transport_contribution__c =TRUE,
+ApprovedBySDM__c =TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_1_3</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver : Sales Director (Price &amp; TC).
+If Order is created by Sales Agent &amp; Area Manager is NOT PRESENT(To SD)
+ Transport Contribution Approval is required or not required
+then only sales director approval is required for Price &amp; Transport contribution.</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE,
+ISBLANK(Manager__c),
+OR(Check_Transport_contribution__c=TRUE,
+Check_Transport_contribution__c=FALSE)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_1_4</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver: Sales director(Price &amp; TC)
+If Order is created by Sales Agent &amp; Sales Director is PRESENT(To SD)
+Transport Contribution Approval is required or not required
+then only sales director approval is required for Price &amp; Transport contribution.</description>
+        <entryCriteria>
+            <formula>AND( 
+Sent_for_Director_Approval_Mexico__c= TRUE , 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+OR(Check_Transport_contribution__c=TRUE,
+Check_Transport_contribution__c=FALSE)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_2_1</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approver:Country Manager(PRICE) &amp; TC
+If Order is created by Sales Agent &amp; Sales Director is NOT PRESENT(To Country Manager)
+Transport Contribution Approval is required or not required
+then only Country Manager approval is required for Price &amp; Transport contribution</description>
+        <entryCriteria>
+            <formula>AND( 
+Sent_for_Director_Approval_Mexico__c= TRUE , 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+ISBLANK(Sales_Director_Mexico__c),
+OR(Check_Transport_contribution__c=TRUE,
+Check_Transport_contribution__c=FALSE)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_2_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>APPROVER= Country Manager(PRICE)
+
+If Order is created by sales agent.Country head is PRESENT(To Country Head) 
+Transport Contribution Approval is not required
+then only Country Manager approval is required for Price.</description>
+        <entryCriteria>
+            <formula>AND( 
+Sent_for_Latam_Director_Approval__c= TRUE , 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+Check_Transport_contribution__c=FALSE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_3_1</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>APPROVER 1= Country Manager(PRICE) 
+APPROVER 2= SD (TC)
+If Order is created by sales agent.Country head is PRESENT(To Country Head) 
+Transport Contribution Approval is required
+then only Country Manager approval is required for Price &amp; Sales director approval is required for TC.</description>
+        <entryCriteria>
+            <formula>AND( 
+Sent_for_Manager_Approval_Mexico__c= FALSE,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c= TRUE , 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+Check_Transport_contribution__c=TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_3_To_Country_Manager_if_CM_is_present_TC_check</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>APPROVER 1= Country Manager(PRICE) 
+APPROVER 2= SD (TC) 
+If Order is created by sales agent.Country head is PRESENT(To Country Head) 
+Transport Contribution Approval is required 
+then only Country Manager approval is required for Price &amp; Sales director approval is required for TC.</description>
+        <entryCriteria>
+            <formula>AND( 
+Sent_for_Latam_Director_Approval__c= TRUE , 
+ISPICKVAL(Order_Raise_By__c,&apos;Sales Agent&apos;),
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+Check_Transport_contribution__c=TRUE,
+Approved_By_SD__c=TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_3_To_Country_Manager_if_CM_is_present_TC_check_After_approval_of_CM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>*1.2 To SD	   
+Approver :SD(for Price &amp; TC) no need of auto approval of area manager
+Bucket- Area Manager.
+If Order is created by Area Manager.
+Transport Contribution Approval is required.
+here AM auto approval is also required bt in this scienario we r sending Price &amp; tc approval direct to sales director.</description>
+        <entryCriteria>
+            <formula>AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Check_Transport_contribution__c=TRUE, 
+Sent_for_Manager_Approval_Mexico__c=TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_4_3</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>* AREA MANAGER to Sales director.
+Approver :SD(for TC &amp; Price or Manager is absent).
+If Order is created by Area Manager.
+Bucket- SD
+Sales Director is PRESENT.
+Transport Contribution Approval is required or not required. this order will go to SD.
+then SD Approval is required for price &amp; TC.
+OR
+If Order is created by Area Manager.
+Bucket-Area Manager(Price) &amp; SD(for TC)
+Area Manager is ABSENT Sales Director is PRESENT.
+Transport Contribution Approval is required.order will go to SD Approval for price &amp; TC.</description>
+        <entryCriteria>
+            <formula>OR(AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Director_Approval_Mexico__c=TRUE,
+Sent_for_Manager_Approval_Mexico__c=False,
+Sent_for_Latam_Director_Approval__c=False,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+OR(Check_Transport_contribution__c=TRUE,Check_Transport_contribution__c==FALSE)
+),
+AND( 
+Sent_for_Manager_Approval_Mexico__c=False,
+Sent_for_Latam_Director_Approval__c=False,
+Sent_for_Director_Approval_Mexico__c=False,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+Check_Transport_contribution__c=TRUE
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step: To Sales Director</label>
+        <name>Step_5_1</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>* AREA MANAGER to SD(if SD is Absent).
+Approver :Country manager(for TC &amp; Price or SD is absent.
+If Order is created by Area Manager.
+Bucket- SD
+Sales Director is not PRESENT.
+Transport Contribution Approval is required or not required. this order will go to Country Manager for price &amp; TC.</description>
+        <entryCriteria>
+            <formula>AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Director_Approval_Mexico__c=TRUE,
+Sent_for_Manager_Approval_Mexico__c=False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c),
+OR(Check_Transport_contribution__c=TRUE,Check_Transport_contribution__c==FALSE)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_4_4</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>* AREA MANAGER to Country Head &amp; TC is unchecked.
+Approver :Country manager for Price.
+If Order is created by Area Manager.
+Bucket- CH
+Country Head is PRESENT.
+Transport Contribution Approval is not required. this order will go to Country Manager for price</description>
+        <entryCriteria>
+            <formula>AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Director_Approval_Mexico__c=FALSE,
+Sent_for_Manager_Approval_Mexico__c=FALSE,
+Sent_for_Latam_Director_Approval__c=True,
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+Check_Transport_contribution__c=FALSE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_5_1_C</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SD_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>* 1.1 AREA MANAGER to Country Head &amp; TC is checked(price Approval)
+Approver :1.1 Country manager for Price. need tc approval.
+If Order is created by Area Manager.
+Bucket- CH
+Country Head is PRESENT.
+Transport Contribution Approval is required. this order will go to Country Manager for price , to SD for TC Approval</description>
+        <entryCriteria>
+            <formula>AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c=False,
+Sent_for_Director_Approval_Mexico__c=False,
+Sent_for_Latam_Director_Approval__c=True,
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+Check_Transport_contribution__c=TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step : To Country Manager</label>
+        <name>Step_5_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Approved_By_SOM_as_TRUE</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>* 1.2 AREA MANAGER to Country Head &amp; TC is checked(TC Approval).
+Approver :1.2 SD for TC.(After Manager Approval)
+If Order is created by Area Manager.
+Bucket- CH
+Country Head is PRESENT.
+Transport Contribution Approval is required. this order will go to Country Manager for price , to SD for TC Approval.</description>
+        <entryCriteria>
+            <formula>AND( 
+ISPICKVAL(Order_Raise_By__c,&apos;Area Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c=False,
+Sent_for_Director_Approval_Mexico__c=False,
+Sent_for_Latam_Director_Approval__c=True,
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+Check_Transport_contribution__c=TRUE,
+Approved_By_SD__c=TRUE
+)</formula>
+        </entryCriteria>
+        <label>Step: To Sales Director</label>
+        <name>Step_5_3</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>SubStatus_set_to_Rejected_by_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>updated for TC.</description>
+    <emailTemplate>Italy/Italy_SO_Approval_Request_Template</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(AND(SalesOrgCode__c=&apos;2410&apos;,ISPICKVAL(Order_Status__c, &apos;Pending&apos;)) ,NOT(AND(SalesOrgCode__c = &apos;2410&apos;, 
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;), 
+ISPICKVAL(Order_Raise_By__c, &apos;Area Manager&apos;), 
+Sent_for_Manager_Approval_Mexico__c = TRUE, 
+Sent_for_Director_Approval_Mexico__c = FALSE, 
+Sent_for_Latam_Director_Approval__c = FALSE, 
+NOT(ISBLANK(Manager__c)), 
+Check_Transport_contribution__c = FALSE 
+)) )</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Alert_if_Italy_Order_is_Approved_to_CS</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_AM</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_CS</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_SA</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Check_Transport_contribution</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Latam_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Manager_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Update_Colombia_Ord_Sub_Checkbox_as_TRUE</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>ITALY SO &amp; TC Approval Process V1.2 (tc)</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>16</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

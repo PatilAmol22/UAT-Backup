@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Return_Amount__c</field>
+        <field>Return_Type__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_Status_as_Approved_by_LM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20006261@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;),
+ISPICKVAL( Return_Type__c , &apos;Logistics&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Logistics&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Customer Service&apos;)),
+OR(ISPICKVAL( Refusal__c , &apos;Yes&apos;),
+ISPICKVAL( Refusal__c , &apos;No&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;),
+ISPICKVAL( Sub_Status__c , &apos;Pending At Logistic Manager&apos;),
+NOT(ISBLANK( Logistics__c  ))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Logistic Manager</label>
+        <name>To_Logistic_Manager</name>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_LM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Approved_By_QT</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004717@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20035962@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>30031753@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>OR
+(
+AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL( Order_Status__c , &apos;pending&apos;) ,
+ISPICKVAL( Sub_Status__c , &apos;Pending At Quality Team&apos;)
+),
+AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;),
+ISPICKVAL( Return_Type__c , &apos;Logistics&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Logistics&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Customer Service&apos;)),
+ISPICKVAL( Refusal__c , &apos;No&apos;),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;)),
+ISPICKVAL( Sub_Status__c , &apos;Pending At Quality Team&apos;)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Quality Team</label>
+        <name>To_Quality_Team</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_QT</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_Status_as_Approved_by_Ct</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004442@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20004458@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20004584@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20034774@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20035831@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL( Order_Status__c , &apos;pending&apos;) ,
+ISPICKVAL( Sub_Status__c , &apos;Pending At Credit Team&apos;)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Credit Team</label>
+        <name>To_Credit_Team</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_CT</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Pending_At_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_District_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;) ,
+NOT(ISBLANK(Sales_District_Manager__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To SDM</label>
+        <name>To_SDM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_SDM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Pending_At_SMM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Office_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;) ,
+NOT(ISBLANK( Sales_Office_Manager__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To SOM</label>
+        <name>To_SOM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_SOM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Pending_At_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004743@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;) ,
+NOT(ISBLANK(Slow_Moving_Manager__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To SMM</label>
+        <name>To_SMM</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_SMM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Approved_By_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;) ,
+ISPICKVAL(Sub_Status__c , &apos;Pending At Sales Director&apos;),
+NOT(ISBLANK(Sales_Director__c ))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To SD</label>
+        <name>To_SD</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_SD</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Approved_By_OM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004535@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>OR
+(
+AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Sales Rep&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Key Account Manager&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Sales District Manager&apos;)),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;) ,
+ISPICKVAL(Sub_Status__c , &apos;Pending At Operational Manager&apos;)
+),
+AND
+(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;),
+ISPICKVAL( Return_Type__c , &apos;Logistics&apos;)),
+OR(ISPICKVAL( RSO_Raised_By__c, &apos;Logistics&apos;),
+ISPICKVAL( RSO_Raised_By__c, &apos;Customer Service&apos;)),
+ISPICKVAL(  Refusal__c , &apos;No&apos;),
+ISPICKVAL(Order_Status__c , &apos;pending&apos;),
+ISPICKVAL(Sub_Status__c , &apos;Pending At Operational Manager&apos;)
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Operational Manager</label>
+        <name>To_Operational_Manager</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_OM</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Pending_At_Supply_Di</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20037087@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(Return_Amount__c &gt; 300000,
+ISPICKVAL(Sub_Status__c , &apos;Pending At CFO&apos;)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To CFO</label>
+        <name>To_CFO</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_CFO</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_Sub_status_Approved_By_Supply_D</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20012130@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+Return_Amount__c &gt; 300000,
+ISPICKVAL(Sub_Status__c , &apos;Pending At Supply Director&apos;)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Supply Director</label>
+        <name>To_Supply_Director</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_Supply_D</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20004717@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>20035962@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <approver>
+                <name>30031753@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND
+(
+ISPICKVAL(Necessary_Technical_Inspection__c , &apos;Yes&apos;),
+ISPICKVAL(Sub_Status__c , &apos;Pending At Inspection Team&apos;)
+)</formula>
+        </entryCriteria>
+        <label>To Inspection Team</label>
+        <name>To_Inspection_Team</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Update_Sub_status_Rejected_By_IT</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>-This Approval Process used for Commercial return type
+-CB Satish Tiware(01-02-2023) edit the approval process for RITM0559282 this</description>
+    <emailTemplate>Brazil/SOR_Approval_request_Email_Template</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+OR(ISPICKVAL( Return_Type__c , &apos;Commercial&apos;),
+ISPICKVAL( Return_Type__c , &apos;Credit&apos;),
+ISPICKVAL( Return_Type__c , &apos;Formulation&apos;),
+ISPICKVAL( Return_Type__c , &apos;Packaging&apos;),
+ISPICKVAL( Return_Type__c , &apos;Customer&apos;),
+ISPICKVAL( Return_Type__c , &apos;Missing&apos;),
+ISPICKVAL( Return_Type__c , &apos;Logistics&apos;)),
+ OR(ISPICKVAL( Order_Status__c , &apos;Pending&apos;),
+ISPICKVAL( Order_Status__c , &apos;Rejected&apos;),
+ISPICKVAL( Order_Status__c , &apos;Recall&apos;)
+)
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Email_alert_if_SOR_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Order_status_Appro</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Sub_status_Pending_at_BC</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Blank_Proceed_with_Return</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Email_alert_if_SOR_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Call_Approval_Process</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Uncheck_Recall_Approval_Checkbox</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Return Sales Order Approval Process v1</label>
+    <processOrder>2</processOrder>
+    <recallActions>
+        <action>
+            <name>Check_Recall_Approval_Checkbox</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Recall</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOrCurrentApprover</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

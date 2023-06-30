@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CreatedBy</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>1 = 0</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>Auto Approve</label>
+        <name>Auto_Approve</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>sadmin@upl.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Dummy Step</label>
+        <name>Dummy_Step</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <emailTemplate>Italy/Italy_SO_Approval_Request_TO_AM_SD_CH</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND (SalesOrgCode__c = &apos;2410&apos;,
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+ISPICKVAL(Order_Raise_By__c, &apos;Area Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c = TRUE,
+Sent_for_Director_Approval_Mexico__c = FALSE,
+Sent_for_Latam_Director_Approval__c = FALSE,
+NOT(ISBLANK(Manager__c)),
+Check_Transport_contribution__c = FALSE,
+Is_Payment_Term_Discount_Approval_Italy__c=FALSE
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approved_By_SDM_as_TRUE</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Order_Sub_Status_to_AutoApproved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_AM</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_SA</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>ITALY SO Auto Approval V1.1</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>17</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

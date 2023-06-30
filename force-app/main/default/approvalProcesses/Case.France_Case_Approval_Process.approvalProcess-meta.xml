@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>System_Admin_France</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>UPL_Management</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>20003998@upl-ltd.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>20010527@upl-ltd.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>CaseNumber</field>
+        <field>Owner</field>
+        <field>CreatedDate</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20010351@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <booleanFilter>1 AND (2 OR 3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10)</booleanFilter>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Open</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Re-labelling</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Quality - Customer</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Quality - Farmer</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Aliment</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Animal</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Milieu</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Personne</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Résistance</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Record_Type__c</field>
+                <operation>equals</operation>
+                <value>Other Incidents - Végétal</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>RejectRecord</ifCriteriaNotMet>
+        <label>Step 1</label>
+        <name>Step_1</name>
+    </approvalStep>
+    <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>1 AND (2 OR 3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10)</booleanFilter>
+        <criteriaItems>
+            <field>Case.Status</field>
+            <operation>equals</operation>
+            <value>Open</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Re-labelling</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Quality - Customer</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Quality - Farmer</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Aliment</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Animal</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Milieu</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Personne</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Résistance</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Record_Type__c</field>
+            <operation>equals</operation>
+            <value>Other Incidents - Végétal</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Case_Closing_Comment</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Case_Status_Closed</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>France_Approval_Status_Close</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Case_Status_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>France_Approval_Status_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>France_Approval_Status_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>France Case Approval Process</label>
+    <processOrder>14</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>sadmin@upl.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Depot__c</field>
+        <field>Status__c</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_1st_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Sub_Status_Pending_Approval_2</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Office_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-SMR created by TM 
+-RM Present &amp; Need MHO Approval false(Manual)
+  OR
+-RM present &amp; Need MHO Approval True(Manual)</description>
+        <entryCriteria>
+            <formula>OR 
+(
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK( Office_Manager__c ) ) ,
+NOT( ISBLANK( Approval_Submission_Date_Time__c )),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK( X1st_Approval_Date_Time__c  ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 1&apos;),
+Need_Marketing_HO_Approval__c = False
+ ),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT(ISBLANK( Office_Manager__c)) ,
+NOT(ISBLANK( Approval_Submission_Date_Time__c)) ,
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK( X1st_Approval_Date_Time__c  ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 1&apos;),
+Need_Marketing_HO_Approval__c = True
+))</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 1: Marketing Manager</label>
+        <name>Level_1_MarketingManager</name>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Need_Marketing_HO_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Sub_Status_as_Rejected</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_2_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Sub_Status_as_Pending_Approval_3</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Assistant__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-SMR created by TM 
+-RM &amp; ZM Present &amp; Need MHO Approval false(Manual)
+OR
+-RM &amp; ZM present &amp; Need MHO Approval True(Manual)
+OR
+-RM absent &amp; ZM Present &amp; Need MHO Approval False(Manual)
+OR
+-RM absent &amp; ZM Present &amp; Need MHO Approval True(Manual)
+OR
+-RM &amp; ZM Present &amp; Need MHO Approval True
+ (RM-Auto Approval)
+OR
+-RM &amp; ZM Present &amp; Need MHO Approval False
+ (RM-Auto Approval)</description>
+        <entryCriteria>
+            <formula>OR
+(
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT(ISBLANK(Sales_Assistant__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+NOT( ISBLANK(X1st_Approval_Date_Time__c) ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 2&apos;),
+Need_Marketing_HO_Approval__c = False
+),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK(Sales_Assistant__c)),
+NOT( ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+NOT( ISBLANK(X1st_Approval_Date_Time__c) ),
+ISBLANK( X2nd_Approval_Date_Time__c ), 
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 2&apos;),
+Need_Marketing_HO_Approval__c = True
+),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+ISBLANK( Office_Manager__c ) ,
+NOT( ISBLANK(  Sales_Assistant__c  ) ),
+NOT( ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK( X1st_Approval_Date_Time__c ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 1&apos;),
+Need_Marketing_HO_Approval__c = False
+),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+ISBLANK( Office_Manager__c ) ,
+NOT(ISBLANK(Sales_Assistant__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK( X1st_Approval_Date_Time__c ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 1&apos;),
+Need_Marketing_HO_Approval__c = True
+),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK(  Sales_Assistant__c  ) ),
+NOT( ISBLANK( Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = True,
+Auto_Approved_2__c = False,
+NOT( ISBLANK(X1st_Approval_Date_Time__c) ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 2&apos;),
+Need_Marketing_HO_Approval__c = True
+),
+AND
+(
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK(  Sales_Assistant__c  ) ),
+NOT( ISBLANK( Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = True,
+Auto_Approved_2__c = False,
+NOT( ISBLANK(X1st_Approval_Date_Time__c) ),
+ISBLANK( X2nd_Approval_Date_Time__c ),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL( Sub_Status__c , &apos;Pending for Approval 2&apos;),
+Need_Marketing_HO_Approval__c = False
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2 : Zonal Manager</label>
+        <name>Level_2_Zonal_Manager</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Need_Marketing_HO_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Sub_Status_as_Rejected</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_3_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Technical_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-SMR created by TM
+-RM &amp; ZM Present &amp; Need MHO Approval 
+ True(Manual)
+OR
+-RM absent &amp; ZM Present &amp; Need MHO Approval 
+ True(Manual)
+OR
+RM Present &amp; ZM absent &amp; Need MHO Approval 
+ True(Manual)
+OR
+RM &amp; ZM absent &amp; Need MHO Approval 
+ True(Manual)
+OR
+-RM &amp; ZM Present &amp; Need MHO Approval True (Auto)
+OR
+-RM &amp; ZM Present &amp; Need MHO Approval True
+ (RM-Auto Approve &amp; ZM-Manual Approve)
+OR
+-RM &amp; ZM Present &amp; Need MHO Approval True
+ (RM-Manual Approve &amp; ZM-Auto Approve)
+OR
+--RM absent &amp; ZM Present &amp; Need MHO Approval -True(ZM-Auto Approve)</description>
+        <entryCriteria>
+            <formula>OR
+( 
+AND
+( 
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+NOT(ISBLANK(Technical_Manager__c )),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+NOT( ISBLANK(X1st_Approval_Date_Time__c)),
+NOT( ISBLANK(X2nd_Approval_Date_Time__c)),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+ISBLANK(Office_Manager__c),
+NOT(ISBLANK(Technical_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c )),
+Auto_Approved_1__c = False, 
+Auto_Approved_2__c = False,                                                                     
+ISBLANK(X1st_Approval_Date_Time__c),
+NOT(ISBLANK(X2nd_Approval_Date_Time__c)),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c ,&apos;Pending&apos;),
+ISBLANK(Sales_Assistant__c),
+NOT(ISBLANK(Technical_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+NOT(ISBLANK(X1st_Approval_Date_Time__c)),
+ISBLANK(X2nd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 2&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+ISBLANK(Office_Manager__c),
+ISBLANK(Sales_Assistant__c),
+NOT(ISBLANK(Technical_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK(X1st_Approval_Date_Time__c),
+ISBLANK(X2nd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c ,&apos;Pending for Approval 1&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+( 
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+NOT(ISBLANK(Technical_Manager__c  ) ),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = True,
+Auto_Approved_2__c = True,
+NOT(ISBLANK(  X1st_Approval_Date_Time__c)),
+NOT(ISBLANK( X2nd_Approval_Date_Time__c)),
+ISPICKVAL(Sub_Status__c ,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c ,&apos;Pending&apos;),
+NOT(ISBLANK(Sales_Assistant__c)),
+NOT(ISBLANK(Territory_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),     
+Auto_Approved_1__c = True,
+Auto_Approved_2__c = False,
+NOT(ISBLANK(X1st_Approval_Date_Time__c)),
+NOT(ISBLANK(X2nd_Approval_Date_Time__c)),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+NOT(ISBLANK(Office_Manager__c)),
+NOT(ISBLANK(Sales_Assistant__c)),
+NOT( ISBLANK(Technical_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c)),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = True,
+NOT(ISBLANK(X1st_Approval_Date_Time__c)),
+NOT(ISBLANK(X2nd_Approval_Date_Time__c)),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+),
+AND
+(
+ISPICKVAL(Status__c,&apos;Pending&apos;),
+ISBLANK(Office_Manager__c),
+NOT(ISBLANK(Sales_Assistant__c)),
+NOT(ISBLANK(Technical_Manager__c)),
+NOT(ISBLANK(Approval_Submission_Date_Time__c )),
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = True,
+ISBLANK(X1st_Approval_Date_Time__c),
+NOT(ISBLANK(X2nd_Approval_Date_Time__c)),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c,&apos;Pending for Approval 3&apos;),
+Need_Marketing_HO_Approval__c=True
+)
+)</formula>
+        </entryCriteria>
+        <label>Level 3 :Marketing HO</label>
+        <name>Marketing_HO</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Need_Marketing_HO_Approval</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_Sub_Status_as_Rejected</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>This approval process is used for Swal (TM) and send for three levels of approval.
+CB: Priyanka Nalawade Date : 20/01/21</description>
+    <emailTemplate>Swal_Sample_Material_Requisition/Approval_request_Email_Template_SWAL</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND( OR(SalesOrg__r.Sales_Org_Code__c =&apos;1210&apos;,
+SalesOrg__r.Sales_Org_Code__c =&apos;1410&apos;),
+RecordType.Name =&quot;Post Free Sample Management&quot;,
+ISPICKVAL( Raised_By__c , &apos;TM&apos;) ,
+NOT( ISBLANK( Depot__c ) ) ,
+OR
+(ISPICKVAL( Status__c , &apos;Draft&apos;) ,
+ISPICKVAL( Status__c , &apos;Rejected&apos;) ))</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Alert_if_SMR_is_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>SMR_email_alert_for_Depot_Person</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Pending_From_Depot</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Sub_Status_as_For_PO_Number</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_SMR_is_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_RM_Notifiction_12Hrs</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_RM_Notifiction_18Hrs</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_1_Approval_Date_time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_2_Approval_Date_Time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_3_Approval_Date_Time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Approval_submission_Date_as_Blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Auto_Approval_1_as_false</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Auto_Approval_2_as_false</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Update_Approval_submission_Date_Time</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_status_as_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Sub_Status_Pending_Approval_1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Swal : Sample Material Requisition</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>2</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

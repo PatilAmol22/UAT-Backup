@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>30000059@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Type_Italy__c,&apos;Child Order&apos;),
+(OR((SalesOrgCode__c = &apos;2410&apos;),(SalesOrgCode__c = &apos;2420&apos;))),
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+Highlight_Field_On_Template__c=True
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>RejectRecord</ifCriteriaNotMet>
+        <label>Step 1</label>
+        <name>Step_1</name>
+    </approvalStep>
+    <description>This Approval Process will run While decreasing the Transport Corporation field value.</description>
+    <emailTemplate>Italy/Italy_Sales_Order_Approved_Template_TC</emailTemplate>
+    <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+ISPICKVAL(Order_Type_Italy__c,&apos;Child Order&apos;),
+(OR((SalesOrgCode__c = &apos;2410&apos;),(SalesOrgCode__c = &apos;2420&apos;))),
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+Highlight_Field_On_Template__c=True
+)</formula>
+    </entryCriteria>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>ItalySalesOrderTC</label>
+    <processOrder>39</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

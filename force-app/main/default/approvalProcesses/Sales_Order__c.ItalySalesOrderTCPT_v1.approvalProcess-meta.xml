@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Customer_service_Logistics_Responsible_Italy_New</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Customer_Service_Operator_Italy_New</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>UPL_Management</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Order_Type_lk__c</field>
+        <field>Order_Status__c</field>
+        <field>DistributionChannelCode__c</field>
+        <field>Division_lk__c</field>
+        <field>NetAmount_Argentina__c</field>
+        <field>Net_Amount__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>Approval Process send to Sales Director while Transport Contribution changed manually or Payment term Discount Increased manually .</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Type_Italy__c,&apos;Child Order&apos;),
+(OR((SalesOrgCode__c = &apos;2410&apos;),(SalesOrgCode__c = &apos;2420&apos;))),
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+Highlight_Field_On_Template__c=True,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+Sent_for_Manager_Approval_Mexico__c= FALSE ,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c= FALSE,
+OR(Is_Payment_Term_Discount_Approval_Italy__c=TRUE,
+Check_Transport_contribution__c=TRUE
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>RejectRecord</ifCriteriaNotMet>
+        <label>Transport Contribution Changed or Payment Term Discount Changed</label>
+        <name>Transport_Contribution_Changed_or_Payment_Term_Discount_Changed</name>
+    </approvalStep>
+    <description>Tgis Approval Process will run while Transport Contribution Changed manually or Payment Term Discount Increased manually .</description>
+    <emailTemplate>Italy/Italy_Sales_Order_Approved_Template_TC</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+ISPICKVAL(Order_Type_Italy__c,&apos;Child Order&apos;),
+(OR((SalesOrgCode__c = &apos;2410&apos;),(SalesOrgCode__c = &apos;2420&apos;))),
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+Highlight_Field_On_Template__c=True
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Update_Order_Status_as_Open_TCPTv1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Higlight_Field_On_Template_Reject_TCPTv1</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Italy_Order_is_Rejected_To_SA_TCPTv1</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Check_Trans_conTCPTv1</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Payment_Term_Discount_Ap_TCPTv1</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected_TCPTv1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>ItalySalesOrderTCPT v1</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>48</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

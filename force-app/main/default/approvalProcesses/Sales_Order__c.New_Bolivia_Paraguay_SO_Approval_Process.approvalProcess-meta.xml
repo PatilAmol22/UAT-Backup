@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>false</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Order_Status__c</field>
+        <field>DistributionChannelCode__c</field>
+        <field>Division_lk__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by Sales Representative or Customer Service.
+-Level 1
+-Sales Manager</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c = TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 1: Sales Manager</label>
+        <name>Step_1</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by Sales Representative.
+-Level 2
+-Country Manager present
+OR
+-If order is created by Sales Representative.
+-Level 1
+- Sales Manager absent</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Latam_Director_Mexico__c ))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+ISBLANK(Sales_Director_Mexico__c),
+NOT(ISBLANK(Latam_Director_Mexico__c ))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2: Country Head</label>
+        <name>Step_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20012437@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by Sales Representative.
+-Level 3
+-Sub reg head present
+OR
+-If order is created by Sales Representative.
+-Level 2
+-Country Head absent
+OR
+-If order is created by Sales Representative.
+-Level 1
+-Sales Manager &amp; Country head absent
+OR
+-If order is created by Sales Representative
+-Level 2
+-Sales Manager &amp; Country head absent</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK(Manager__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Latam_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c),
+ISBLANK(Latam_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c),
+ISBLANK(Latam_Director_Mexico__c)
+)
+)</formula>
+        </entryCriteria>
+        <label>Level 3:Sub Regional Head</label>
+        <name>Step_3</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Created By Priyanka Nalawade on 22/07/21</description>
+    <emailTemplate>Paraguay/Paraguay_Bolivia_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+OR(SalesOrgCode__c = &apos;5361&apos;,SalesOrgCode__c =&apos;5441&apos;),
+Call_Process_Builder_Flow__c = True,
+OR(ISPICKVAL(Order_Status__c,&apos;Pending&apos;),ISPICKVAL( Order_Status__c,&apos;Rejected&apos;)))</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Check_Level_1_Approved_as_true</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Paraguay_Approved_Email_Notification</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Call_Process_Builder_Flag_False</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Check_Level_1_Approved_as_true</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Paraguay_Rejected_Email_Notification</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Latam_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Manager_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected_Step1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>New:Bolivia-Paraguay SO Approval Process</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>26</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

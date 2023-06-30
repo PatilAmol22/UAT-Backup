@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>TerritoryManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Step 1</label>
+        <name>Step_1</name>
+    </approvalStep>
+    <emailTemplate>United_Kingdom/Sales_Order_Approval_UK</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <booleanFilter>(1 AND (2 OR 3) AND (4 OR 5))</booleanFilter>
+        <criteriaItems>
+            <field>Sales_Order__c.Per_Unit_Discount_UK__c</field>
+            <operation>greaterThan</operation>
+            <value>INR 0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sales_Order__c.SalesOrgCode__c</field>
+            <operation>equals</operation>
+            <value>2031</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Sales_Order__c.SalesOrgCode__c</field>
+            <operation>equals</operation>
+            <value>2032</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>User.UserRole</field>
+            <operation>notEqual</operation>
+            <value>Commercial Manager UK/IE</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>User.UserRole</field>
+            <operation>notEqual</operation>
+            <value>Country Manager UK/IE</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Order_Status_Approved_UK</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>UK_Approved_Order_Email_Alert</name>
+            <type>Alert</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Order_Status_Rejected_UK</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>UK_Rejected_Order_Email_Alert</name>
+            <type>Alert</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Update_Order_Status_as_Pending_UK</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>UK Sales Order Approval</label>
+    <processOrder>16</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

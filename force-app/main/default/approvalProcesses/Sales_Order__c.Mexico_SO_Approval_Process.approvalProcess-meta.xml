@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>sadmin@upl.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Order_Type_lk__c</field>
+        <field>Order_Status__c</field>
+        <field>DistributionChannelCode__c</field>
+        <field>Division_lk__c</field>
+        <field>NetAmount_Argentina__c</field>
+        <field>Net_Amount__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_Director</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+NOT(ISBLANK(Manager__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Regional Manager</label>
+        <name>To_Regional_Manager</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_SubRegio</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>OR
+(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Sales Director</label>
+        <name>To_Sales_Director</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_Done</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20012048@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>OR
+(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK(Latam_Director_Mexico__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= FALSE,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK(Latam_Director_Mexico__c))
+),AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+ISBLANK(Sales_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+ISBLANK(Sales_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK( RegionalManager__c ))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Sales Regional Head</label>
+        <name>To_Sales_Regional_Head</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004439@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+Sent_for_Latam_Director__c = TRUE
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To Latam Director</label>
+        <name>Latam_Director</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>RegionalManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= FALSE,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+Sent_for_CFO__c = TRUE,
+NOT(ISBLANK( RegionalManager__c ))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+Sent_for_CFO__c = TRUE,
+NOT(ISBLANK( RegionalManager__c ))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE,
+Sent_for_Director_Approval_Mexico__c= FALSE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+Sent_for_CFO__c = TRUE,
+NOT(ISBLANK( RegionalManager__c ))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>To CFO</label>
+        <name>To_CFO</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Update_last_Approval_Date_Time</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>REH__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+Sent_for_Latam_Director__c = TRUE,
+Sent_for_CCO__c = TRUE,
+NOT(ISBLANK(REH__c))
+)</formula>
+        </entryCriteria>
+        <label>To CCO</label>
+        <name>To_CCO</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>RITM0572682</description>
+    <emailTemplate>Mexico/Mexico_SO_Approval_Requests</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(SalesOrgCode__c=&apos;5100&apos;,
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;))</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Email_Alert_when_Mexico_order_is_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Blank_last_update_Date_Time</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Rejection_Email_Alert_when_mexico_order_is_rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_sent_for_CCO</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_sent_for_CFO</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_sent_for_Latam_Director</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Latam_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Manager_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Mexico_PriceControl_WarningNote</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Mexico Sales Order Approval Process V1</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>55</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

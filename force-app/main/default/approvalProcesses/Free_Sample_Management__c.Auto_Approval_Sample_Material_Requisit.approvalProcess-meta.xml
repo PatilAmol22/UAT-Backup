@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>sadmin@upl.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Depot__c</field>
+        <field>Status__c</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CreatedBy</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <formula>1=0</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
+        <label>Auto Approve</label>
+        <name>Auto_Approve</name>
+    </approvalStep>
+    <description>- Used for Swal Auto Approval Process 
+- If ZMM is creating the order &amp; Ho Approval checkbox is false 
+-Created be Priyanka Nalawade(16-09-21)</description>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND
+(OR(SalesOrg__r.Sales_Org_Code__c =&apos;1210&apos;,
+SalesOrg__r.Sales_Org_Code__c =&apos;1410&apos;),
+RecordType.Name =&quot;Post Free Sample Management&quot;,
+NOT( ISBLANK( Depot__c ) ),
+ISPICKVAL( Raised_By__c , &apos;ZMM&apos;) ,
+OR(ISPICKVAL( Status__c , &apos;Draft&apos;) ,
+ISPICKVAL( Status__c , &apos;Rejected&apos;)) ,
+Auto_Approved_1__c = False,
+Auto_Approved_2__c = False,
+ISBLANK( X1st_Approval_Date_Time__c ),
+ISBLANK( X2nd_Approval_Date_Time__c),
+ISBLANK(X3rd_Approval_Date_Time__c),
+ISPICKVAL(Sub_Status__c ,&apos;Pending for Approval 3&apos;),
+Approved_By_ZMM__c = true,
+Need_Marketing_HO_Approval__c=False
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Alert_if_SMR_is_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>SMR_email_alert_for_Depot_Person</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Pending_From_Depot</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Sub_Status_as_For_PO_Number</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_SMR_is_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_RM_Notifiction_12Hrs</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_RM_Notifiction_18Hrs</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_1_Approval_Date_time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_2_Approval_Date_Time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_3_Approval_Date_Time_blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Approval_submission_Date_as_Blank</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Auto_Approval_1_as_false</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Auto_Approval_2_as_false</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Update_Approval_submission_Date_Time</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_status_as_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Auto Approval : Sample Material Requisit</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>3</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

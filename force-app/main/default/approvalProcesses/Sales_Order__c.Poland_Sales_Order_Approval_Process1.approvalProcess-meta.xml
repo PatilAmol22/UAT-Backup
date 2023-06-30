@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>sadmin@upl.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>View__c</field>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>OrderQuantity__c</field>
+        <field>Gross_Amount__c</field>
+        <field>Order_Status__c</field>
+        <field>Payment_Term__c</field>
+        <field>Inco_Term__c</field>
+        <field>Ship_To_Party_Adrdress_Mexico__c</field>
+        <field>CreatedBy</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Check_Level_1_Approved_as_true</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by Regular Distributor.
+-KAM present</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Regular Distributor&apos;),
+Sent_for_Manager_Approval_Mexico__c = TRUE ,
+IsCustomerPortal__c = False,
+Need_Community_Approval__c = False,
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 1</label>
+        <name>Level_1</name>
+        <rejectionActions>
+            <action>
+                <name>Check_Level_1_Approved_as_true</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Check_Level_1_Approved_as_true</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by KAM Or Wholesale sales manager for Regular Customer
+OR
+-If Order created by KAM Or Wholesales Manager for Non Regular Customer
+-Sales Manager present</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+NOT(ISBLANK(Manager__c))
+),
+AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = FALSE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+NOT(ISBLANK(Manager__c))
+),
+AND(
+OR(
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Non Regular Customer&apos;)),
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Non Regular Customer&apos;)),
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Non Regular Customer&apos;))
+),
+IsCustomerPortal__c = FALSE,
+Need_Community_Approval__c = FALSE,
+Sent_for_Manager_Approval_Mexico__c = TRUE ,
+NOT(ISBLANK(Manager__c))
+),
+AND(
+OR(
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;)),
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;)),
+AND(ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;),ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;))
+),
+IsCustomerPortal__c = FALSE,
+Need_Community_Approval__c = FALSE,
+Sent_for_Manager_Approval_Mexico__c = TRUE ,
+NOT(ISBLANK(Manager__c))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 1</label>
+        <name>Level_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order created by KAM Or Wholesale Manager
+-Regular Distributor present</description>
+        <entryCriteria>
+            <formula>AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+ISBLANK(Latam_Director_Mexico__c),
+ISBLANK(RegionalManager__c ),
+ISBLANK(REH__c),
+ISBLANK(TerritoryManager__c)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2</label>
+        <name>Level_21</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If Order is created by KAM or Wholesales Manager for Cimmunity Users</description>
+        <entryCriteria>
+            <formula>AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+ISBLANK(RegionalManager__c ),
+ISBLANK(REH__c),
+ISBLANK(TerritoryManager__c)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2</label>
+        <name>Level_22</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>RegionalManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If Order is created by KAM or Wholesales Manager for 3 Community Users</description>
+        <entryCriteria>
+            <formula>AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+NOT(ISBLANK(RegionalManager__c	)),
+ISBLANK(REH__c),
+ISBLANK(TerritoryManager__c)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2</label>
+        <name>Level_23</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>RegionalManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>REH__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If Order is created by KAM or Wholesales Manager 
+ for 4 Community Users</description>
+        <entryCriteria>
+            <formula>AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+NOT(ISBLANK(RegionalManager__c )),
+NOT(ISBLANK(REH__c)),
+ISBLANK(TerritoryManager__c)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 2</label>
+        <name>Level_24</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>REH__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>TerritoryManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>Latam_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <approver>
+                <name>RegionalManager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If Order is created by KAM or Wholesales Manager 
+ for 5 Community Users</description>
+        <entryCriteria>
+            <formula>AND(
+OR(ISPICKVAL(Order_Raise_By__c,&apos;Key Account Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Wholesale sales Manager&apos;),ISPICKVAL(Order_Raise_By__c,&apos;Non Crop Product &amp; Retail Sales Manager&apos;)),
+ISPICKVAL( Distributor_Type_Poland__c , &apos;Regular Customer&apos;),
+IsCustomerPortal__c = TRUE,
+Need_Community_Approval__c = TRUE,
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c)),
+NOT(ISBLANK(Latam_Director_Mexico__c)),
+NOT(ISBLANK(RegionalManager__c )),
+NOT(ISBLANK(REH__c)),
+NOT(ISBLANK(TerritoryManager__c))
+)</formula>
+        </entryCriteria>
+        <label>Level 2</label>
+        <name>Level_25</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+        <rejectionActions>
+            <action>
+                <name>Uncheck_Level_1_Approved_as_false</name>
+                <type>FieldUpdate</type>
+            </action>
+        </rejectionActions>
+    </approvalStep>
+    <description>Created By Satish Tiware(15/02/2021)</description>
+    <emailTemplate>Poland/Poland_SO_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+SalesOrgCode__c = &apos;2941&apos;,
+OR(ISPICKVAL(Order_Status__c,&apos;Pending&apos;),ISPICKVAL( Order_Status__c,&apos;Rejected&apos;))
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Alert_if_Poland_SO_is_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Order_Approval_Date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Call_Process_Builder_Flag_False</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Poland_SO_is_rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Latam_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Manager_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected_Step1</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Uncheck_Level_1_Approved_as_false</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Poland Sales Order Approval Process1</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>14</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

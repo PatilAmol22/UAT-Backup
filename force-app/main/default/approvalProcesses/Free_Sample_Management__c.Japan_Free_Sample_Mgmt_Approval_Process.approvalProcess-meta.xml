@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>UPL_Management</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>sadmin@upl.com</submitter>
+        <type>user</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Applicant__c</field>
+        <field>Status__c</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Set_Approved_by_OM_as_true</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Office_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-FSM created by TS &amp; AM
+-OM present</description>
+        <entryCriteria>
+            <formula>AND
+(
+ ISPICKVAL( Record_Created_By__c , &apos;Non Office Manager&apos;),
+ ISPICKVAL(  Status__c , &apos;Pending&apos;),
+  NOT( ISBLANK( Office_Manager__c ) ) ,
+   Approved_by_Office_Manager__c = False
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Level 1:Office Manager</label>
+        <name>Level_1_Office_Manager</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Technical_Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-FSM created by TS &amp; AM &amp; OM
+-TM present</description>
+        <entryCriteria>
+            <formula>OR
+(
+AND
+(
+ISPICKVAL( Record_Created_By__c , &apos;Non Office Manager&apos;),
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK(  Technical_Manager__c ) ) ,
+Approved_by_Office_Manager__c = True
+),
+AND
+(
+ISPICKVAL( Record_Created_By__c , &apos;Office Manager&apos;),
+ISPICKVAL( Status__c , &apos;Pending&apos;),
+NOT( ISBLANK(  Technical_Manager__c ) ) ,
+Approved_by_Office_Manager__c = False
+)
+)</formula>
+        </entryCriteria>
+        <label>Level 2:Technical Manager</label>
+        <name>Level_2_Technical_Manager</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <emailTemplate>Japan_Email_Template/Free_Sample_Mgmt_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND
+(
+  RecordType.Name =&quot;Pre Free Sample Management&quot;,
+OR
+(ISPICKVAL( Status__c , &apos;Draft&apos;) ,
+ ISPICKVAL( Status__c , &apos;Rejected&apos;) )
+   
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Approval_Alert_if_FSP_is_Approved</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_Record_Type</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Rejection_Alert_if_FSP_is_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Approved_by_OM</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Creation_Alert_if_FSP_is_created</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Update_status_as_Pending</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>Japan Free Sample Mgmt Approval Process</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>1</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>false</showApprovalHistory>
+</ApprovalProcess>

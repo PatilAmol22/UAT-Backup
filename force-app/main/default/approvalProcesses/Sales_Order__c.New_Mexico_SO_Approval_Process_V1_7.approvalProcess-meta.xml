@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Order_Type_lk__c</field>
+        <field>Order_Status__c</field>
+        <field>DistributionChannelCode__c</field>
+        <field>Division_lk__c</field>
+        <field>NetAmount_Argentina__c</field>
+        <field>Net_Amount__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_Director</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Manager__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by TM.
+-Level 1
+-CL present</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+NOT(ISBLANK(Manager__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step 1</label>
+        <name>Step_1</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_Done</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by TM.
+-Level 2
+-SD present	
+
+OR
+
+-If order is created by TM.
+-Level 1
+- CL absent</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+
+NOT(ISBLANK(Sales_Director_Mexico__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step 2</label>
+        <name>Step_2</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <approvalActions>
+            <action>
+                <name>Mexico_PriceControl_WarningNote_Done</name>
+                <type>FieldUpdate</type>
+            </action>
+        </approvalActions>
+        <assignedApprover>
+            <approver>
+                <name>20004439@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by TM.
+-Level 3
+-RH present
+OR
+-If order is created by TM.
+-Level 2
+-SD absent
+
+OR
+-If order is created by TM.
+-Level 1
+-CL &amp; SD absent
+
+OR
+-If order is created by TM.
+-Level 2
+-CL &amp; SD absent</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK(Latam_Director_Mexico__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+ISBLANK(Sales_Director_Mexico__c)
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Territory Manager&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Manager__c),
+ISBLANK(Sales_Director_Mexico__c)
+)
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step 3</label>
+        <name>Step_3</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Sales_Director_Mexico__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by CL.
+-Level 2
+-SD present</description>
+        <entryCriteria>
+            <formula>AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Commercial Leader&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+NOT(ISBLANK(Sales_Director_Mexico__c))
+)</formula>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Step 4</label>
+        <name>Step_4</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>true</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20004439@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <description>-If order is created by CL.
+-Level 3
+-RH present
+
+OR
+-If order is created by CL.
+-Level 2
+-SD absent</description>
+        <entryCriteria>
+            <formula>OR(
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Commercial Leader&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=TRUE,
+NOT(ISBLANK(Latam_Director_Mexico__c))
+),
+AND(
+ISPICKVAL(Order_Raise_By__c,&apos;Commercial Leader&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= TRUE,
+Sent_for_Latam_Director_Approval__c=False,
+ISBLANK(Sales_Director_Mexico__c)
+)
+)</formula>
+        </entryCriteria>
+        <label>step 5</label>
+        <name>step_5</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Used for new Mexico - Updated on 13.9.19
+(Pallavi) Ver 1.7</description>
+    <emailTemplate>Mexico/Mexico_Sales_Order_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <formula>AND(
+AND(SalesOrgCode__c=&apos;5100&apos;,ISPICKVAL(Order_Status__c, &apos;Pending&apos;)) ,
+NOT(
+AND(SalesOrgCode__c =&apos;5100&apos;,
+ISPICKVAL(Order_Status__c, &apos;Pending&apos;),
+ISPICKVAL(Order_Raise_By__c,&apos;Commercial Leader&apos;),
+Sent_for_Manager_Approval_Mexico__c= TRUE ,
+Sent_for_Director_Approval_Mexico__c= False,
+Sent_for_Latam_Director_Approval__c=False
+
+))
+)</formula>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Mexico_PriceControl_WarningNote_Done</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Open</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Notification_Mexico_Customer_Service_User_on_Rejection</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Rejection_Alert_if_Mexico_Order_is_Rejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Latam_Director_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Uncheck_Sent_for_Manager_Approval</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Update_Order_Status_as_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>Mexico_PriceControl_WarningNote</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>New Mexico SO Approval Process V1.7</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>8</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

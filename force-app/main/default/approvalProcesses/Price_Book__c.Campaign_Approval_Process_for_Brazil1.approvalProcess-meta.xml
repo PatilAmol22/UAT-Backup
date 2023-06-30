@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <submitter>Brazil_Sales_Price_Admin</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Brazil_System_Administrator</submitter>
+        <type>role</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Status__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20033167@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Price_Book__c.isActive__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>RejectRecord</ifCriteriaNotMet>
+        <label>Brazil Price book</label>
+        <name>Brazil_Price_book</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>20037087@upl-ltd.com</name>
+                <type>user</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Price_Book__c.isActive__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </criteriaItems>
+        </entryCriteria>
+        <label>Approval by Finance Manager</label>
+        <name>Approval_by_Finance_Manager</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
+    <description>Price Book approval will only be for REH approval.
+
+17.6.21: replaced &quot;Marcelo Zanchi&quot; with &quot;Eduardo Mazzieri&quot; in the Assigned Approver
+INCTASK0538573: Replaced : &quot;Eduardo Mazzieri&quot; with &apos;Marcos Scali&apos; in Assigned Approver</description>
+    <emailTemplate>Brazil/Price_Book_Campaign_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Price_Book__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Waiting Approval</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Price_Book__c.isActive__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Brazil_Price_Book_Approval_Alert_Step</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Is_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Status</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>true</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Brazil_Price_Book_Rejection_Alert_Step</name>
+            <type>Alert</type>
+        </action>
+        <action>
+            <name>Status_on_Rejection</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>Campaign Approval Process1 for Brazil</label>
+    <processOrder>1</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>
